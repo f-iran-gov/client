@@ -3,7 +3,7 @@ import { avgPing } from "./average-ping"
 
 export async function getServers() {
   let data: Server[] = []
-  console.log("url: ", process.env.SERVER_URL)
+  console.log("urll: ", process.env.SERVER_URL)
 
   try {
     const res = await fetch(`${process.env.SERVER_URL}/api/get-all-vpns/`)
