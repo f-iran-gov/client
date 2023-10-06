@@ -13,7 +13,9 @@ export async function connectedUsers() {
   const users: User[] = []
 
   await new Promise<void>(resolve => {
-    exec("sudo arp -a", async (err, stdout) => {
+    const cmd =
+      "sudo arp -a" + (process.env.NODE_ENV === "production" && " | grep 10.39")
+    exec(cmd, async (err, stdout) => {
       if (err) return
 
       const lines = stdout.split("\n")

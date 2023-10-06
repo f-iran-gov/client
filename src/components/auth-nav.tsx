@@ -17,7 +17,7 @@ export default function AuthNav() {
   if (status !== "unauthenticated") {
     return (
       <>
-        <Button onClick={() => signOut()}>Log out</Button>
+        <Button onClick={() => signOut({ callbackUrl: "/" })}>Log out</Button>
       </>
     )
   }

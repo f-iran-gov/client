@@ -13,7 +13,6 @@ import SelectServer from "./select-server"
 
 export default async function AvailableServers() {
   const data = await serverClient.getServers()
-  console.log("AvailableServers: ", data)
   if (!data) return <></>
 
   return (

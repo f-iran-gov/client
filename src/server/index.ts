@@ -6,11 +6,14 @@ import { connectedUsers } from "./lib/connected-users"
 import { getServers } from "./lib/get-servers"
 import { signUp } from "./lib/sign-up"
 import { getCurrentServer } from "./lib/get-current-server"
+import { isUpdated, updateSystem } from "./lib/update-system"
 
 export const appRouter = router({
   connectionStatus: publicProcedure.query(connectionStatus),
   getCurrentServer: publicProcedure.query(getCurrentServer),
   getEnvVar: publicProcedure.input(z.string()).query(c => process.env[c.input]),
+  getIsUpdated: publicProcedure.query(isUpdated),
+  updateSystem: publicProcedure.mutation(updateSystem),
   vpnConnect: publicProcedure
     .input(
       z.object({
