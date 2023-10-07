@@ -1,14 +1,8 @@
-import { exec } from "child_process"
+import asyncExec from "./async-exec"
 
 export async function ping(input: string) {
-  let connected = true
-
-  await new Promise<void>(resolve => {
-    exec(`ping ${input} -c 1 -i 1 -w 1 -W 1`, err => {
-      if (err) connected = false
-      resolve()
-    })
+  return await asyncExec(`ping ${input} -c 1 -i 1 -w 1 -W 1`, err => {
+    if (err) return false
+    else return true
   })
-
-  return connected
 }

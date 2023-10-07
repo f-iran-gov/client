@@ -1,21 +1,14 @@
-import { exec } from "child_process"
-
-const gotoDir = "cd /var/www/client/"
-const pull = "sudo git pull origin master"
-const npmBuild = "npm i && npm run build"
-const resetPM2 = "pm2 delete all && pm2 start npm --name client -- start"
-const restartNginx = "sudo systemctl restart nginx"
+import asyncExec from "./async-exec"
+import { homedir } from "os"
 
 export async function isUpdated() {
-  const updated = await new Promise<boolean>(res => {
-    exec(`${gotoDir} && ${pull}`, (err, stdout) => {
-      if (err) return
-      const updated = stdout.includes("Already up to date.")
-      res(updated)
-    })
-  })
+  const cd = "cd /var/www/client/"
+  const pull = "sudo git pull origin master"
 
-  return updated
+  return await asyncExec(`${cd} && ${pull}`, (err, stdout) => {
+    if (err) return false
+    return stdout.includes("Already up to date.")
+  })
 }
 
 export async function updateSystem(): Promise<{
@@ -26,9 +19,10 @@ export async function updateSystem(): Promise<{
 
   if (updated) {
     return { updated, message: "Already up to date." }
-  } else {
-    // Already in /var/www/client and pulled from git
-    exec(`${npmBuild} && ${resetPM2} && ${restartNginx}`)
-    return { updated, message: "Updated." }
   }
+
+  return await asyncExec(homedir() + "/update.sh", err => {
+    if (err) return { updated: false, message: "Error updating." }
+    return { updated: true, message: "Updated." }
+  })
 }

@@ -11,7 +11,6 @@ import {
 } from "@/components/ui/table"
 import { Check, X } from "lucide-react"
 import { trpc } from "../_trpc/client"
-import { useEffect } from "react"
 import { User } from "@/server/lib/connected-users"
 
 export default function ConnectedUsers({
@@ -19,7 +18,7 @@ export default function ConnectedUsers({
 }: {
   initialData: User[]
 }) {
-  const { data: users, refetch } = trpc.connectedUsers.useQuery(undefined, {
+  const { data: users } = trpc.connectedUsers.useQuery(undefined, {
     initialData,
   })
 

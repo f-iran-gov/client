@@ -1,4 +1,3 @@
-import { exec } from "child_process"
 import { existsSync } from "fs"
 import { getServerSession } from "next-auth"
 import { db } from "@/db/drizzle-db"
@@ -7,6 +6,7 @@ import { connectionStatus } from "./connection-status"
 import { homedir } from "os"
 import { eq } from "drizzle-orm"
 import { VpnConnectType } from ".."
+import asyncExec from "./async-exec"
 
 export async function vpnConnect({
   serverName,
@@ -32,11 +32,9 @@ export async function vpnConnect({
 
   // If the VPN exists, we connect to it
   if (connected) {
-    await new Promise<void>(resolve => {
-      exec(disconnectCmd, err => {
-        if (err) error = "Couldn't change the VPN status."
-        resolve()
-      })
+    error = await asyncExec(disconnectCmd, err => {
+      if (err) return "Couldn't change the VPN status."
+      return null
     })
 
     const server = await db.query.currentServer.findFirst()
@@ -44,21 +42,17 @@ export async function vpnConnect({
 
     // User is already connected, but is just switching vpns
     if (serverName !== server?.name) {
-      await new Promise<void>(resolve => {
-        exec(connectCmd, err => {
-          if (err) error = "Couldn't change the VPN status."
-          resolve()
-        })
+      error = await asyncExec(connectCmd, err => {
+        if (err) error = "Couldn't change the VPN status."
+        return null
       })
       db.insert(currentServer).values(payload).run()
     }
   } else if (exists) {
     // Connecting to an existing vpn
-    await new Promise<void>(resolve => {
-      exec(connectCmd, err => {
-        if (err) error = "Couldn't change the VPN status."
-        resolve()
-      })
+    error = await asyncExec(connectCmd, err => {
+      if (err) error = "Couldn't change the VPN status."
+      return null
     })
 
     // Updating the current server in the DB
@@ -80,22 +74,18 @@ export async function vpnConnect({
       const makeOvpn = `echo "${data.ovpn}" > ${home}/vpns/${serverName}/vpn.ovpn`
       const makeAuth = `echo "${data.username}\n${data.password}" > ${home}/vpns/${serverName}/auth.txt`
       const makePass = `echo "${data.password}" > ${home}/vpns/${serverName}/pass.txt`
-      const cmd = `${makeDir} && ${makeOvpn} && ${makeAuth} && ${makePass}`
+      const initVpn = `${makeDir} && ${makeOvpn} && ${makeAuth} && ${makePass}`
 
       // Making all of the files and folders
-      await new Promise<void>(resolve => {
-        exec(cmd, err => {
-          if (err) error = "Error creating the VPN files."
-          resolve()
-        })
+      error = await asyncExec(initVpn, err => {
+        if (err) return "An error happened when creating the VPN."
+        return null
       })
 
       // Connecting to the VPN
-      await new Promise<void>(resolve => {
-        exec(connectCmd, err => {
-          if (err) error = "Error connecting to VPN server."
-          resolve()
-        })
+      error = await asyncExec(connectCmd, err => {
+        if (err) return "An error occurred when connecting to the VPN."
+        return null
       })
 
       db.insert(currentServer).values(payload).run()

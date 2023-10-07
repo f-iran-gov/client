@@ -1,21 +1,8 @@
-import { exec } from "child_process"
+import asyncExec from "./async-exec"
 
 export async function connectionStatus() {
-  let connected = false
-
-  await new Promise<void>((resolve, reject) => {
-    exec("ps aux | pgrep openvpn", (err, stdout, stderr) => {
-      if (err) {
-        connected = false
-      }
-      if (stdout) {
-        connected = true
-      }
-      resolve()
-    })
+  return await asyncExec("ps aux | pgrep openvpn", (err, stdout) => {
+    if (stdout) return true
+    return false
   })
-
-  if (!connected) return connected
-
-  return connected
 }

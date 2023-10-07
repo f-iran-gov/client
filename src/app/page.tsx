@@ -9,9 +9,7 @@ export default function Home() {
       </h1>
       <div className="mx-auto flex w-[50%] flex-col gap-4">
         <Link href="license">
-          <Button className="w-full" variant="outline">
-            New User
-          </Button>
+          <Button className="w-full">New User</Button>
         </Link>
         <Link href="sign-in">
           <Button className="w-full">Existing User</Button>

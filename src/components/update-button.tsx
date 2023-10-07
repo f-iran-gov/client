@@ -3,30 +3,72 @@
 import { trpc } from "@/app/_trpc/client"
 import { Button } from "./ui/button"
 import { useState } from "react"
-import Loading from "./loading"
-import { toast } from "react-toastify"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
 
 export default function UpdateButton() {
-  // const { data: updated, isLoading } = trpc.getIsUpdated.useQuery()
-  // const updateSystem = trpc.updateSystem.useMutation()
-  // const [loading, setLoading] = useState(false)
-  // const [finishedUpdating, setFinishedUpdating] = useState(false)
-  // async function update() {
-  //   setLoading(true)
-  //   const data = await updateSystem.mutateAsync()
-  //   toast.success(data.message)
-  //   setFinishedUpdating(true)
-  // }
-  // if (isLoading || !updated || finishedUpdating) return <></>
-  // else if (loading)
-  //   return (
-  //     <Button className="w-[80px]" disabled>
-  //       <Loading noText />
-  //     </Button>
-  //   )
-  // return (
-  //   <Button className="w-[80px]" onClick={update}>
-  //     Update
-  //   </Button>
-  // )
+  const { data: updated, isLoading } = trpc.getIsUpdated.useQuery()
+  const updateSystem = trpc.updateSystem.useMutation()
+  const [finishedUpdating, setFinishedUpdating] = useState(false)
+  const [state, setState] = useState<
+    "confirm" | "pending" | "complete" | "error"
+  >("confirm")
+
+  async function update(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
+    if (state === "confirm") e.preventDefault()
+    setState("pending")
+    try {
+      await updateSystem.mutateAsync()
+    } catch (error) {
+      setState("error")
+      return
+    }
+    setFinishedUpdating(true)
+    setState("complete")
+  }
+
+  if (!finishedUpdating && !updated && !isLoading)
+    return (
+      <AlertDialog>
+        <AlertDialogTrigger asChild>
+          <Button className="w-[80px]">Update</Button>
+        </AlertDialogTrigger>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              {state === "pending" && "Update in progress"}
+              {state === "confirm" && "Update"}
+              {state === "complete" && "Update complete"}
+              {state === "error" && "Update failed"}
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              {state === "pending" &&
+                "This could take a few minutes, please wait..."}
+              {state === "confirm" && "Are you sure you want to update?"}
+              {state === "complete" && "You are all good to go!"}
+              {state === "error" && "Update failed!"}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            {state === "confirm" && (
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+            )}
+            {state !== "pending" && (
+              <AlertDialogAction onClick={update}>
+                {state === "confirm" ? "Update" : "Close"}
+              </AlertDialogAction>
+            )}
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    )
 }
