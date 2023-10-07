@@ -2,18 +2,14 @@ import bcrypt from "bcryptjs"
 import * as schema from "@/db/schema"
 import { db } from "@/db/drizzle-db"
 import { eq } from "drizzle-orm"
+import { SignUpType } from ".."
 
 export async function signUp({
   username,
   password,
   email,
   license,
-}: {
-  username: string
-  password: string
-  email: string
-  license: string
-}) {
+}: SignUpType) {
   // If user already exists, return error
   try {
     const user = await db.query.users.findFirst({

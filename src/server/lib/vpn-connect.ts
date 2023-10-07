@@ -6,16 +6,13 @@ import { currentServer, users } from "@/db/schema"
 import { connectionStatus } from "./connection-status"
 import { homedir } from "os"
 import { eq } from "drizzle-orm"
+import { VpnConnectType } from ".."
 
 export async function vpnConnect({
   serverName,
   country,
   countryCode,
-}: {
-  serverName: string
-  country: string
-  countryCode: string
-}) {
+}: VpnConnectType) {
   const payload = { name: serverName, time: Date.now(), country, countryCode }
   const home = homedir()
   const connectCmd = `sudo openvpn --daemon --config ${home}/vpns/${serverName}/vpn.ovpn --auth-user-pass ${home}/vpns/${serverName}/auth.txt --askpass ${home}/vpns/${serverName}/pass.txt`
@@ -31,7 +28,6 @@ export async function vpnConnect({
   if (!user) return { success: false, error: "You are not logged in." }
 
   const connected = await connectionStatus()
-
   const exists = existsSync(`${home}/vpns/${serverName}/vpn.ovpn`)
 
   // If the VPN exists, we connect to it
@@ -43,8 +39,21 @@ export async function vpnConnect({
       })
     })
 
+    const server = await db.query.currentServer.findFirst()
     await db.delete(currentServer)
+
+    // User is already connected, but is just switching vpns
+    if (serverName !== server?.name) {
+      await new Promise<void>(resolve => {
+        exec(connectCmd, err => {
+          if (err) error = "Couldn't change the VPN status."
+          resolve()
+        })
+      })
+      db.insert(currentServer).values(payload).run()
+    }
   } else if (exists) {
+    // Connecting to an existing vpn
     await new Promise<void>(resolve => {
       exec(connectCmd, err => {
         if (err) error = "Couldn't change the VPN status."
@@ -52,6 +61,7 @@ export async function vpnConnect({
       })
     })
 
+    // Updating the current server in the DB
     await db.delete(currentServer)
     db.insert(currentServer).values(payload).run()
   } else {

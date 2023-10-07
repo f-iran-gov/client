@@ -14,9 +14,14 @@ export async function connectedUsers() {
 
   await new Promise<void>(resolve => {
     const cmd =
-      "sudo arp -a" + (process.env.NODE_ENV === "production" && " | grep 10.39")
+      "sudo arp -a" +
+      (process.env.NODE_ENV === "production" ? " | grep 10.39" : "")
+
     exec(cmd, async (err, stdout) => {
-      if (err) return
+      if (err || stdout === "") {
+        resolve()
+        return
+      }
 
       const lines = stdout.split("\n")
 

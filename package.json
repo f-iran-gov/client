@@ -9,6 +9,7 @@
     "export": "next export",
     "generate": "drizzle-kit generate:sqlite",
     "prettier": "prettier --write \"./**/*.{js,jsx,ts,tsx,json}\"",
+    "test": "which prettier",
     "studio": "drizzle-kit studio"
   },
   "dependencies": {
@@ -50,7 +51,7 @@
     "@types/node": "20.6.0",
     "@types/react": "18.2.21",
     "@types/react-dom": "18.2.7",
-    "prettier": "latest",
+    "prettier": "^3.0.3",
     "prettier-plugin-tailwindcss": "^0.5.4",
     "typescript": "5.2.2"
   }

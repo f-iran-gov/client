@@ -29,9 +29,9 @@ export default function ConnectionCard() {
 
   async function toggleConnection() {
     const defaultServer = {
-      serverName: "NewYork-1",
-      country: "United States",
-      countryCode: "US",
+      serverName: connected ? "" : "NewYork-1",
+      country: connected ? "" : "United States",
+      countryCode: connected ? "" : "US",
     }
     VpnStore.setState({ loading: true })
     await vpnConnect.mutateAsync(defaultServer)

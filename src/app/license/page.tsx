@@ -60,7 +60,7 @@ export default function License() {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="absolute left-1/2 top-1/2 w-full -translate-x-1/2 -translate-y-1/2 transform space-y-6 md:w-[50%]"
+        className="mx-auto w-full transform space-y-6 md:w-[50%]"
       >
         <FormField
           control={form.control}
@@ -69,11 +69,7 @@ export default function License() {
             <FormItem>
               <FormLabel>License Key</FormLabel>
               <FormControl>
-                <Input
-                  defaultValue={license || ""}
-                  placeholder="License Key"
-                  {...field}
-                />
+                <Input placeholder="License Key" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>

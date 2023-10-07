@@ -3,7 +3,6 @@ import { LanguageToggle } from "./language-toggle"
 import { DarkModeToggle } from "./dark-mode"
 import { Card } from "./ui/card"
 import AuthNav from "./auth-nav"
-import UpdateButton from "./update-button"
 
 export default async function Navbar() {
   return (
@@ -19,7 +18,7 @@ export default async function Navbar() {
 
       <div className="hidden gap-x-4 xl:flex">
         <AuthNav />
-        <UpdateButton />
+        {/* <UpdateButton /> */}
         <LanguageToggle />
         <DarkModeToggle />
       </div>

@@ -11,13 +11,12 @@ import {
 } from "@/components/ui/form"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import Loading from "@/components/loading"
-import { signIn, useSession } from "next-auth/react"
-import { useRouter } from "next/navigation"
+import { signIn } from "next-auth/react"
 
 const formData = z.object({
   email: z.string().email("Invalid email address."),
@@ -30,18 +29,11 @@ const formData = z.object({
 type FormSchema = z.infer<typeof formData>
 
 export default function SignInPage() {
-  const router = useRouter()
-  const { status } = useSession()
-
   const form = useForm<FormSchema>({
     resolver: zodResolver(formData),
   })
 
   const [loading, setLoading] = useState(false)
-
-  useEffect(() => {
-    status === "authenticated" && router.push("/dashboard")
-  }, [status])
 
   async function onSubmit(values: FormSchema) {
     setLoading(true)
@@ -59,9 +51,6 @@ export default function SignInPage() {
     }
     window.location.href = "/dashboard"
   }
-
-  if (status === "loading" || status === "authenticated")
-    return <Loading center />
 
   return (
     <Form {...form}>
