@@ -21,11 +21,21 @@ export async function vpnConnect({
 
   // Making sure user is logged in
   const session = await getServerSession()
-  if (!session) return { success: false, error: "You are not logged in." }
+  if (!session)
+    return {
+      success: false,
+      error: "You must first be logged in.",
+      connected: false,
+    }
   const user = await db.query.users.findFirst({
     where: eq(users.email, session.user.email),
   })
-  if (!user) return { success: false, error: "You are not logged in." }
+  if (!user)
+    return {
+      success: false,
+      error: "You must first be logged in.",
+      connected: false,
+    }
 
   const connected = await connectionStatus()
   const exists = existsSync(`${home}/vpns/${serverName}/vpn.ovpn`)

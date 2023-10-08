@@ -8,6 +8,7 @@ import { wait } from "@/lib/wait"
 import VpnStore from "@/context/vpn-store"
 import { useEffect } from "react"
 import ConnectionDuration from "./connection-duration"
+import { toast } from "react-toastify"
 
 export default function ConnectionCard() {
   const { data: server, refetch: refetchServer } =
@@ -34,7 +35,11 @@ export default function ConnectionCard() {
       countryCode: connected ? "" : "US",
     }
     VpnStore.setState({ loading: true })
-    await vpnConnect.mutateAsync(defaultServer)
+    const res = await vpnConnect.mutateAsync(defaultServer)
+    console.log(res)
+    if (res.error) {
+      toast.error(res.error)
+    }
     await wait(1) // just so the user doesn't go crazy with vpn connection commands
     const { data } = await refetchStatus()
     await refetchServer()

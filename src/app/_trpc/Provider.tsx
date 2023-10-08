@@ -7,7 +7,7 @@ import { trpc } from "./client"
 
 export default function Provider({ children }: { children: React.ReactNode }) {
   const url =
-    (process.env.NEXT_PUBLIC_HOSTNAME ?? "http://localhost:3000") + "/api/trpc"
+    (process.env.NEXT_PUBLIC_HOSTNAME ?? "http://localhost:3001") + "/api/trpc"
 
   const [queryClient] = useState(() => new QueryClient({}))
   const [trpcClient] = useState(() =>
