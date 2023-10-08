@@ -36,7 +36,6 @@ export default function ConnectionCard() {
     }
     VpnStore.setState({ loading: true })
     const res = await vpnConnect.mutateAsync(defaultServer)
-    console.log(res)
     if (res.error) {
       toast.error(res.error)
     }

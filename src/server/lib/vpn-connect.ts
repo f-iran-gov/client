@@ -75,10 +75,14 @@ export async function vpnConnect({
 
     if (res.ok) {
       const data: {
+        error?: string
         username: string
         password: string
         ovpn: string
       } = await res.json()
+
+      // If there was an error, we return it
+      if (data.error) return { success: false, error: data.error, connected }
 
       const makeDir = `mkdir -p ${home}/vpns/${serverName}`
       const makeOvpn = `echo "${data.ovpn}" > ${home}/vpns/${serverName}/vpn.ovpn`

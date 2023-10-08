@@ -6,6 +6,7 @@ import { Server } from "@/types/server.type"
 import { trpc } from "../_trpc/client"
 import Loading from "@/components/loading"
 import { wait } from "@/lib/wait"
+import { toast } from "react-toastify"
 
 export default function SelectServer({ server }: { server: Server }) {
   const {
@@ -20,11 +21,14 @@ export default function SelectServer({ server }: { server: Server }) {
 
   async function handleClick() {
     VpnStore.setState({ loading: true })
-    await vpnConnect.mutateAsync({
+    const res = await vpnConnect.mutateAsync({
       serverName: server.name,
       country: server.country,
       countryCode: server.country_code,
     })
+    if (res.error) {
+      toast.error(res.error)
+    }
     await wait(1)
     await refetchCurrentServer()
     await refetchConnection()
