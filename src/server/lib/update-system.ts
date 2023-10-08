@@ -21,7 +21,7 @@ export async function updateSystem(): Promise<{
     return { updated, message: "Already up to date." }
   }
 
-  return await asyncExec("sudo ./update.sh", (err, _) => {
+  return await asyncExec("sudo ./update.sh > ./out", (err, _) => {
     if (err) return { updated: false, message: "Error updating." }
     return { updated: true, message: "Updated." }
   })
