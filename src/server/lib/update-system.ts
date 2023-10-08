@@ -2,13 +2,14 @@ import asyncExec from "./async-exec"
 import { homedir } from "os"
 
 export async function isUpdated() {
-  const cd = "cd /var/www/client/"
-  const pull = "sudo git pull origin master"
+  // Get the version from online and compare it to the local version
+  const res = await fetch(
+    "https://raw.githubusercontent.com/f-iran-gov/client/master/package.json",
+    { cache: "no-cache" }
+  )
+  const data = await res.json()
 
-  return await asyncExec(`${cd} && ${pull}`, (err, stdout) => {
-    if (err) return false
-    return stdout.includes("Already up to date.")
-  })
+  return process.env.npm_package_version === data.version
 }
 
 export async function updateSystem(): Promise<{
