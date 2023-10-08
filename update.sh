@@ -2,13 +2,15 @@
 
 cd /var/www/client/
 echo -ne "17\n"
-git pull origin master
+sudo git pull origin master
 echo -ne "33\n"
-npm i
+sudo npm i
 echo -ne "50\n"
-npm run build
+sudo npm run build
 echo -ne "67\n"
-pm2 delete all && pm2 start npm --name client -- start
+sudo pm2 delete all 
+echo -ne "75\n"
+sudo pm2 start npm --name client -- start
 echo -ne "83\n"
-systemctl restart nginx
+sudo systemctl restart nginx
 echo -ne "100\n"

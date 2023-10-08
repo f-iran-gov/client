@@ -14,11 +14,12 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
+import { Check, X } from "lucide-react"
+import Loading from "./loading"
 
 export default function UpdateButton() {
   const { data: updated, isLoading } = trpc.getIsUpdated.useQuery()
   const updateSystem = trpc.updateSystem.useMutation()
-  const [finishedUpdating, setFinishedUpdating] = useState(false)
   const [state, setState] = useState<
     "confirm" | "pending" | "complete" | "error"
   >("confirm")
@@ -27,16 +28,15 @@ export default function UpdateButton() {
     if (state === "confirm") e.preventDefault()
     setState("pending")
     try {
-      await updateSystem.mutateAsync()
+      const data = await updateSystem.mutateAsync()
+      setState("complete")
     } catch (error) {
       setState("error")
       return
     }
-    setFinishedUpdating(true)
-    setState("complete")
   }
 
-  if (!finishedUpdating && !updated && !isLoading)
+  if (!updated && !isLoading)
     return (
       <AlertDialog>
         <AlertDialogTrigger asChild>
@@ -45,17 +45,33 @@ export default function UpdateButton() {
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>
-              {state === "pending" && "Update in progress"}
+              {state === "pending" && (
+                <div className="flex items-center gap-3">
+                  <Loading noText />
+                  Update in progress
+                </div>
+              )}
               {state === "confirm" && "Update"}
-              {state === "complete" && "Update complete"}
-              {state === "error" && "Update failed"}
+              {state === "complete" && (
+                <div className="flex items-center gap-3">
+                  <Check color="green" />
+                  Update complete
+                </div>
+              )}
+              {state === "error" && (
+                <div className="flex items-center gap-3">
+                  <X color="red" />
+                  Update failed
+                </div>
+              )}
             </AlertDialogTitle>
             <AlertDialogDescription>
               {state === "pending" &&
                 "This could take a few minutes, please wait..."}
               {state === "confirm" && "Are you sure you want to update?"}
               {state === "complete" && "You are all good to go!"}
-              {state === "error" && "Update failed!"}
+              {state === "error" &&
+                "We failed to update your device. Please try again later ;("}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
