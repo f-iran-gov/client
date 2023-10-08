@@ -21,10 +21,16 @@ export async function updateSystem(): Promise<{
     return { updated, message: "Already up to date." }
   }
 
-  const err = await asyncExec("sudo /usr/local/bin/update.sh", err => {
+  return await asyncExec("sudo ./update.sh", (err, _) => {
     if (err) return { updated: false, message: "Error updating." }
     return { updated: true, message: "Updated." }
   })
 
-  return err
+  // const sc = spawn("sudo", ["./update.sh"])
+  // sc.stdout.on("data", progress => {
+  //   console.log(progress, "\n")
+  // })
+  // sc.kill()
+
+  // return { updated: true, message: "Updated." }
 }
