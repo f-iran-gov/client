@@ -1,5 +1,4 @@
 import asyncExec from "./async-exec"
-import { homedir } from "os"
 
 export async function isUpdated() {
   // Get the version from online and compare it to the local version
@@ -22,8 +21,10 @@ export async function updateSystem(): Promise<{
     return { updated, message: "Already up to date." }
   }
 
-  return await asyncExec(homedir() + "/update.sh", err => {
+  const err = await asyncExec("sudo /usr/local/bin/update.sh", err => {
     if (err) return { updated: false, message: "Error updating." }
     return { updated: true, message: "Updated." }
   })
+
+  return err
 }
