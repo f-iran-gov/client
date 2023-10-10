@@ -77,7 +77,8 @@ export default function UpdateButton() {
               {state === "pending" &&
                 "This could take a few minutes, please wait..."}
               {state === "confirm" && "Are you sure you want to update?"}
-              {state === "complete" && "You are all good to go!"}
+              {state === "complete" &&
+                "The system is being updated! You can now close this tab."}
               {state === "error" &&
                 "We failed to update your device. Please try again later ;("}
             </AlertDialogDescription>
