@@ -19,7 +19,7 @@ export async function isUpdated() {
     }
   )
 
-  return process.env.npm_package_version === data.version && !updating
+  return process.env.npm_package_version === data.version || updating
 }
 
 export async function updateSystem(): Promise<{
