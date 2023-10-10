@@ -11,7 +11,15 @@ export async function isUpdated() {
   )
   const data = await res.json()
 
-  return process.env.npm_package_version === data.version
+  const updating = await asyncExec(
+    "ps aux | pgrep update.sh",
+    (err, stdout) => {
+      if (stdout) return true
+      else return false
+    }
+  )
+
+  return process.env.npm_package_version === data.version && !updating
 }
 
 export async function updateSystem(): Promise<{

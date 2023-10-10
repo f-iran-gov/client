@@ -24,6 +24,7 @@ export default function UpdateButton() {
   const [state, setState] = useState<
     "confirm" | "pending" | "complete" | "error"
   >("confirm")
+  const [hide, setHide] = useState(false)
 
   async function update(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
     if (state === "confirm") e.preventDefault()
@@ -36,7 +37,6 @@ export default function UpdateButton() {
       } else {
         setState("complete")
       }
-      await refetch()
     } catch (error) {
       toast.error("Failed to update device")
       setState("error")
@@ -44,7 +44,12 @@ export default function UpdateButton() {
     }
   }
 
-  if (!updated && !isLoading)
+  async function close() {
+    setHide(true)
+    await refetch()
+  }
+
+  if (!updated && !isLoading && !hide)
     return (
       <AlertDialog>
         <AlertDialogTrigger asChild>
@@ -91,7 +96,7 @@ export default function UpdateButton() {
               </>
             )}
             {state === "complete" && (
-              <AlertDialogCancel>Close</AlertDialogCancel>
+              <AlertDialogCancel onClick={close}>Close</AlertDialogCancel>
             )}
           </AlertDialogFooter>
         </AlertDialogContent>
