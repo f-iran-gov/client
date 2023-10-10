@@ -16,9 +16,10 @@ import {
 } from "@/components/ui/alert-dialog"
 import { Check, X } from "lucide-react"
 import Loading from "./loading"
+import { toast } from "react-toastify"
 
 export default function UpdateButton() {
-  const { data: updated, isLoading } = trpc.getIsUpdated.useQuery()
+  const { data: updated, isLoading, refetch } = trpc.getIsUpdated.useQuery()
   const updateSystem = trpc.updateSystem.useMutation()
   const [state, setState] = useState<
     "confirm" | "pending" | "complete" | "error"
@@ -29,8 +30,15 @@ export default function UpdateButton() {
     setState("pending")
     try {
       const data = await updateSystem.mutateAsync()
-      setState("complete")
+      if (!data.updated) {
+        toast.error("Failed to update device")
+        setState("error")
+      } else {
+        setState("complete")
+      }
+      await refetch()
     } catch (error) {
+      toast.error("Failed to update device")
       setState("error")
       return
     }
@@ -76,12 +84,13 @@ export default function UpdateButton() {
           </AlertDialogHeader>
           <AlertDialogFooter>
             {state === "confirm" && (
-              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction onClick={update}>Update</AlertDialogAction>
+              </>
             )}
-            {state !== "pending" && (
-              <AlertDialogAction onClick={update}>
-                {state === "confirm" ? "Update" : "Close"}
-              </AlertDialogAction>
+            {state === "complete" && (
+              <AlertDialogCancel>Close</AlertDialogCancel>
             )}
           </AlertDialogFooter>
         </AlertDialogContent>

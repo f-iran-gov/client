@@ -1,5 +1,8 @@
 import asyncExec from "./async-exec"
 
+export const dynamic = "force-dynamic"
+export const runtime = "edge"
+
 export async function isUpdated() {
   // Get the version from online and compare it to the local version
   const res = await fetch(
@@ -25,12 +28,4 @@ export async function updateSystem(): Promise<{
     if (err) return { updated: false, message: "Error updating." }
     return { updated: true, message: "Updated." }
   })
-
-  // const sc = spawn("sudo", ["./update.sh"])
-  // sc.stdout.on("data", progress => {
-  //   console.log(progress, "\n")
-  // })
-  // sc.kill()
-
-  // return { updated: true, message: "Updated." }
 }
