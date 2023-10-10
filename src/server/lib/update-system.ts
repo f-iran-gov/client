@@ -26,8 +26,7 @@ export async function updateSystem(): Promise<{
 
   // we save a copy of update.sh, and then we run it
   await asyncExec("sudo cp ./update.sh /usr/local/bin/update.sh")
-  return await asyncExec("sudo /usr/local/bin/update.sh &", (err, _) => {
-    if (err) return { updated: false, message: "Error updating." }
-    return { updated: true, message: "Updated." }
-  })
+  asyncExec("sudo /usr/local/bin/update.sh &")
+
+  return { updated: true, message: "Updating..." }
 }
