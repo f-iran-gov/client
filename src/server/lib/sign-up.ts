@@ -3,6 +3,7 @@ import * as schema from "@/db/schema"
 import { db } from "@/db/drizzle-db"
 import { eq } from "drizzle-orm"
 import { SignUpType } from ".."
+import torRequest from "./tor-request"
 
 export async function signUp({
   username,
@@ -38,6 +39,7 @@ export async function signUp({
     })
     .run()
 
+  // If there's already a user, don't create a new user on the server
   if (totalUsers >= 1) {
     return {
       success: true,
@@ -47,26 +49,22 @@ export async function signUp({
     }
   }
 
-  const res = await fetch(`${process.env.SERVER_URL}/api/sign-up/`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      username: username,
-      password: password,
-      email: email,
-      product: license,
-    }),
+  const res = await torRequest("/api/sign-up/", "POST", {
+    username,
+    password,
+    email,
+    product: license,
   })
-  const data2: {
+  const data = res.data as {
     success: boolean
     errors: {
       username: string[] | null
       email: string[] | null
       password: string[] | null
     }
-  } = await res.json()
+  }
 
-  if (data2.success) {
+  if (data.success) {
     return {
       success: true,
       username: undefined,
@@ -77,8 +75,8 @@ export async function signUp({
 
   return {
     success: false,
-    username: data2.errors.username?.join(" "),
-    email: data2.errors.email?.join(" "),
-    password: data2.errors.password?.join(" "),
+    username: data.errors.username?.join(" "),
+    email: data.errors.email?.join(" "),
+    password: data.errors.password?.join(" "),
   }
 }

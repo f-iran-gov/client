@@ -28,10 +28,10 @@ const formSchema = z.object({
 type FormSchema = z.infer<typeof formSchema>
 
 export default function License() {
-  const { data: serverUrl } = trpc.getEnvVar.useQuery("SERVER_URL")
   const license = VpnStore.getState().license
   const router = useRouter()
   const [loading, setLoading] = useState(false)
+  const torRequest = trpc.torRequest.useMutation()
 
   const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
@@ -43,8 +43,10 @@ export default function License() {
     const license_ = values.license.trim()
 
     // Validate license key
-    const res = await fetch(`${serverUrl}/api/validate-license/${license_}/`)
-    const data: { valid: boolean } = await res.json()
+    const res = await torRequest.mutateAsync(
+      `/api/validate-license/${license_}/`
+    )
+    const data = res.data as { valid: boolean }
 
     if (data.valid) {
       VpnStore.setState({ license: license_ })

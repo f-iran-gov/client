@@ -1,20 +1,21 @@
 import { Server } from "@/types/server.type"
 import { avgPing } from "./average-ping"
+import torRequest from "./tor-request"
 
 export async function getServers() {
-  let data: Server[] = []
+  let servers: Server[] = []
 
   try {
-    const res = await fetch(`${process.env.SERVER_URL}/api/get-all-vpns/`)
-    data = await res.json()
+    const res = await torRequest("/api/get-all-vpns/")
+    servers = res.data as Server[]
   } catch {
     return null
   }
 
-  for (const server of data) {
+  for (const server of servers) {
     const { averagePing } = await avgPing(server.ip.toString())
-    data[data.indexOf(server)] = { ...server, averagePing }
+    servers[servers.indexOf(server)] = { ...server, averagePing }
   }
 
-  return data
+  return servers
 }

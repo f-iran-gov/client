@@ -7,6 +7,7 @@ import { homedir } from "os"
 import { eq } from "drizzle-orm"
 import { VpnConnectType } from ".."
 import asyncExec from "./async-exec"
+import torRequest from "./tor-request"
 
 export async function vpnConnect({
   serverName,
@@ -70,16 +71,17 @@ export async function vpnConnect({
     db.insert(currentServer).values(payload).run()
   } else {
     // Connecting to a new vpn
-    const url = `${process.env.SERVER_URL}/api/create-client/${serverName}/${user.license}/`
-    const res = await fetch(url)
+    const res = await torRequest(
+      `/api/create-client/${serverName}/${user.license}/`
+    )
 
-    if (res.ok) {
+    if (res.success) {
       const data: {
         error?: string
         username: string
         password: string
         ovpn: string
-      } = await res.json()
+      } = res.data as any
 
       // If there was an error, we return it
       if (data.error) return { success: false, error: data.error, connected }
