@@ -8,11 +8,19 @@ import {
 } from "./ui/dropdown-menu"
 import { Button } from "./ui/button"
 import { Languages } from "lucide-react"
-
-type LangType = "English" | "Persian"
+import { Locale } from "@/types/i18n.type"
+import { usePathname, useRouter } from "next/navigation"
 
 export function LanguageToggle() {
-  async function changeLang(lang: LangType) {}
+  const pathname = usePathname()
+  const router = useRouter()
+
+  function changeLang(locale: Locale) {
+    if (!pathname) return "/"
+    const segments = pathname.split("/")
+    segments[1] = locale
+    router.push(segments.join("/"))
+  }
 
   return (
     <DropdownMenu>
@@ -23,10 +31,10 @@ export function LanguageToggle() {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuItem onClick={() => changeLang("English")}>
+        <DropdownMenuItem onClick={() => changeLang("en")}>
           English
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => changeLang("Persian")}>
+        <DropdownMenuItem onClick={() => changeLang("fa")}>
           Persian
         </DropdownMenuItem>
       </DropdownMenuContent>

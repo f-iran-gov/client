@@ -3,12 +3,19 @@
 import { Button } from "@/components/ui/button"
 import VpnStore from "@/context/vpn-store"
 import { Server } from "@/types/server.type"
-import { trpc } from "../_trpc/client"
 import Loading from "@/components/loading"
 import { wait } from "@/lib/wait"
 import { toast } from "react-toastify"
+import { trpc } from "@/app/_trpc/client"
+import { Dictionary } from "@/lib/dictionary"
 
-export default function SelectServer({ server }: { server: Server }) {
+export default function SelectServer({
+  server,
+  dict,
+}: {
+  server: Server
+  dict: Dictionary
+}) {
   const {
     data: currentServer,
     refetch: refetchCurrentServer,
@@ -39,12 +46,14 @@ export default function SelectServer({ server }: { server: Server }) {
 
   if (currentServer?.name === server.name && connected)
     return (
-      <h1 className="flex h-8 w-20 items-center justify-center">Connected</h1>
+      <h1 className="flex h-8 w-20 items-center justify-center">
+        {dict.dashboard.connected}
+      </h1>
     )
 
   return (
     <Button onClick={handleClick} variant="default" className="h-8 w-20">
-      Connect
+      {dict.dashboard.connect}
     </Button>
   )
 }

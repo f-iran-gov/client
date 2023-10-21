@@ -10,7 +10,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const { status } = useSession()
 
   useEffect(() => {
-    if (status === "unauthenticated") router.push("/sign-in")
+    if (status === "unauthenticated") router.push("sign-in")
   }, [status])
 
   if (status === "authenticated") {

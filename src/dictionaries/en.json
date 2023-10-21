@@ -1,0 +1,25 @@
+{
+  "home": {
+    "title": "Welcome to your new VPN service provider.",
+    "register": "Register",
+    "login": "Login"
+  },
+  "dashboard": {
+    "users": "Connected Users",
+    "name": "Name",
+    "ip": "IP Address",
+    "mac": "MAC Address",
+    "status": "Status",
+    "duration": "Duration",
+    "unknown": "Unknown",
+    "connect": "Connect",
+    "connected": "Connected",
+    "disconnect": "Disconnect",
+    "disconnected": "Disconnected",
+    "vpns": "Available VPNs",
+    "country": "Country",
+    "signal": "Signal",
+    "active": "Active",
+    "inactive": "Inactive"
+  }
+}

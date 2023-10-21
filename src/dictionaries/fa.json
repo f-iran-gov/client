@@ -1,0 +1,25 @@
+{
+  "home": {
+    "title": "!خوش آمدید به سرویس وی پی ان جدید شما",
+    "register": "ثبت نام",
+    "login": "ورود"
+  },
+  "dashboard": {
+    "users": "کاربران",
+    "name": "اسم",
+    "ip": "آی پی",
+    "mac": "مک آدرس",
+    "status": "وضعیت",
+    "duration": "مدت زمان",
+    "unknown": "ناشناس",
+    "connect": "اتصال",
+    "connected": "متصل",
+    "disconnect": "قطع اتصال",
+    "disconnected": "قطع",
+    "vpns": "وی پی ان ها",
+    "country": "کشور",
+    "signal": "سیگنال",
+    "active": "فعال",
+    "inactive": "غیر فعال"
+  }
+}

@@ -17,7 +17,8 @@ import { useRouter } from "next/navigation"
 import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
-import { trpc } from "../_trpc/client"
+import { trpc } from "@/app/_trpc/client"
+import { Locale } from "@/types/i18n.type"
 
 const formSchema = z.object({
   license: z
@@ -27,7 +28,11 @@ const formSchema = z.object({
 
 type FormSchema = z.infer<typeof formSchema>
 
-export default function License() {
+export default function License({
+  params: { lang },
+}: {
+  params: { lang: Locale }
+}) {
   const license = VpnStore.getState().license
   const router = useRouter()
   const [loading, setLoading] = useState(false)
@@ -50,7 +55,7 @@ export default function License() {
 
     if (data.valid) {
       VpnStore.setState({ license: license_ })
-      router.push("/sign-up")
+      router.push("sign-up")
     } else {
       form.setError("license", { message: "Invalid license key." })
     }

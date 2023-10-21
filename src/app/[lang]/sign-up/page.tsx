@@ -18,7 +18,7 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import Loading from "@/components/loading"
-import { trpc } from "../_trpc/client"
+import { trpc } from "../../_trpc/client"
 
 const formData = z
   .object({

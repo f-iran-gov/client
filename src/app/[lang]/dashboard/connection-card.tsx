@@ -3,14 +3,22 @@
 import { Power } from "lucide-react"
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
-import { trpc } from "../_trpc/client"
+import { trpc } from "@/app/_trpc/client"
 import { wait } from "@/lib/wait"
 import VpnStore from "@/context/vpn-store"
 import { useEffect } from "react"
 import ConnectionDuration from "./connection-duration"
 import { toast } from "react-toastify"
+import { Dictionary } from "@/lib/dictionary"
+import { Locale } from "@/types/i18n.type"
 
-export default function ConnectionCard() {
+export default function ConnectionCard({
+  dict,
+  lang,
+}: {
+  dict: Dictionary
+  lang: Locale
+}) {
   const { data: server, refetch: refetchServer } =
     trpc.getCurrentServer.useQuery()
   const {
@@ -61,7 +69,10 @@ export default function ConnectionCard() {
   }
 
   return (
-    <Card className="col-span-2 py-4 md:col-span-2 md:h-[450px] lg:col-span-1 lg:text-lg">
+    <Card
+      className="col-span-2 py-4 md:col-span-2 md:h-[450px] lg:col-span-1 lg:text-lg"
+      dir={lang === "fa" ? "rtl" : "ltr"}
+    >
       <CardContent>
         <button
           onClick={toggleConnection}
@@ -71,24 +82,26 @@ export default function ConnectionCard() {
           }
         >
           <Power size={40} />
-          <h1>{connected ? "Disconnect" : "Connect"}</h1>
+          <h1>
+            {connected ? dict.dashboard.disconnect : dict.dashboard.connect}
+          </h1>
         </button>
       </CardContent>
       <CardFooter className="flex w-full flex-col gap-y-4">
         <div className="flex w-full justify-between">
-          <h1>Status</h1>
+          <h1>{dict.dashboard.status}</h1>
           <h1 className={connected ? "text-green-500" : "text-red-500"}>
-            {connected ? "Connected" : "Disconnected"}
+            {connected ? dict.dashboard.connected : dict.dashboard.disconnected}
           </h1>
         </div>
         {connected && (
           <>
             <div className="flex w-full justify-between">
-              <h1>Name</h1>
+              <h1>{dict.dashboard.name}</h1>
               <h1>{server?.name}</h1>
             </div>
             <div className="flex w-full justify-between">
-              <h1>Duration</h1>
+              <h1>{dict.dashboard.duration}</h1>
               <ConnectionDuration time={server?.time} />
             </div>
           </>
