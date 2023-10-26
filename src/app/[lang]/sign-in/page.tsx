@@ -17,6 +17,7 @@ import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import Loading from "@/components/loading"
 import { signIn } from "next-auth/react"
+import useLocalStore from "@/context/locale-store"
 
 const formData = z.object({
   email: z.string().email("Invalid email address."),
@@ -29,6 +30,8 @@ const formData = z.object({
 type FormSchema = z.infer<typeof formData>
 
 export default function SignInPage() {
+  const { auth } = useLocalStore(state => state.dict)
+  const lang = useLocalStore(state => state.lang)
   const form = useForm<FormSchema>({
     resolver: zodResolver(formData),
   })
@@ -57,17 +60,18 @@ export default function SignInPage() {
       <form
         onSubmit={form.handleSubmit(onSubmit)}
         className="mx-auto w-full space-y-6 md:w-[50%]"
+        dir={lang === "fa" ? "rtl" : "ltr"}
       >
         <FormField
           control={form.control}
           name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Email</FormLabel>
+              <FormLabel>{auth.email}</FormLabel>
               <FormControl>
                 <Input
                   type="email"
-                  placeholder="Email"
+                  placeholder={auth.email}
                   autoFocus={true}
                   autoComplete="on"
                   {...field}
@@ -82,23 +86,23 @@ export default function SignInPage() {
           name="password"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Password</FormLabel>
+              <FormLabel>{auth.password}</FormLabel>
               <FormControl>
-                <Input type="password" placeholder="Password" {...field} />
+                <Input type="password" placeholder={auth.password} {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
         <Button type="submit" variant="default" className="w-full">
-          {loading ? <Loading /> : "Sign In"}
+          {loading ? <Loading /> : auth.signIn}
         </Button>
-        <Link href="/sign-up">
+        <Link href="sign-up">
           <Button
             className="mt-2 h-0 px-0 text-sm transition-all hover:text-blue-400"
             variant="link"
           >
-            No account yet? Register here.
+            {auth.goToSignUp}
           </Button>
         </Link>
       </form>

@@ -13,17 +13,12 @@ import { Check, RefreshCcw, X } from "lucide-react"
 import { trpc } from "@/app/_trpc/client"
 import { User } from "@/server/lib/connected-users"
 import Loading from "@/components/loading"
-import { Dictionary } from "@/lib/dictionary"
-import { Locale } from "@/types/i18n.type"
+import useLocalStore from "@/context/locale-store"
 
 export default function ConnectedUsers({
   initialData,
-  dict,
-  lang,
 }: {
   initialData: User[]
-  dict: Dictionary
-  lang: Locale
 }) {
   const {
     data: users,
@@ -32,6 +27,8 @@ export default function ConnectedUsers({
   } = trpc.connectedUsers.useQuery(undefined, {
     initialData,
   })
+  const dict = useLocalStore(state => state.dict)
+  const lang = useLocalStore(state => state.lang)
 
   // useEffect(() => {
   //   const interval = setInterval(() => {
@@ -62,10 +59,7 @@ export default function ConnectedUsers({
         <RefreshCcw
           className="cursor-pointer transition duration-500 hover:rotate-180 hover:scale-105"
           size={20}
-          onClick={() => {
-            console.log("first")
-            refetch()
-          }}
+          onClick={() => refetch()}
         />
       </CardHeader>
       <CardContent dir={lang === "fa" ? "rtl" : "ltr"}>
@@ -74,7 +68,7 @@ export default function ConnectedUsers({
             <TableRow>
               <TableHead>{dict.dashboard.name}</TableHead>
               <TableHead>{dict.dashboard.ip}</TableHead>
-              <TableHead>{dict.dashboard.ip}</TableHead>
+              <TableHead>{dict.dashboard.mac}</TableHead>
               <TableHead>{dict.dashboard.status}</TableHead>
             </TableRow>
           </TableHeader>

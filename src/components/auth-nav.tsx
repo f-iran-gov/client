@@ -5,9 +5,11 @@ import { Button } from "./ui/button"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useEffect } from "react"
+import useLocalStore from "@/context/locale-store"
 
 export default function AuthNav() {
   const { status, update } = useSession()
+  const { auth } = useLocalStore(state => state.dict)
   const path = usePathname()
 
   useEffect(() => {
@@ -17,19 +19,22 @@ export default function AuthNav() {
   if (status !== "unauthenticated") {
     return (
       <>
-        <Button onClick={() => signOut({ callbackUrl: "/" })}>Log out</Button>
+        <Button onClick={() => signOut({ callbackUrl: "/" })}>
+          {auth.signOut}
+        </Button>
       </>
     )
   }
 
   return (
     <>
-      <Button>
-        <Link href="/sign-in">Login</Link>
-      </Button>
-      <Button>
-        <Link href="/sign-up">Sign Up</Link>
-      </Button>
+      <Link href="sign-in">
+        <Button>{auth.signIn}</Button>
+      </Link>
+
+      <Link href="sign-up">
+        <Button>{auth.register}</Button>
+      </Link>
     </>
   )
 }

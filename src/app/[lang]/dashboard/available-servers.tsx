@@ -10,17 +10,11 @@ import {
 import { serverClient } from "@/app/_trpc/serverClient"
 import Image from "next/image"
 import SelectServer from "./select-server"
-import { Dictionary } from "@/lib/dictionary"
-import { Locale } from "@/types/i18n.type"
+import useLocalStore from "@/context/locale-store"
 
-export default async function AvailableServers({
-  dict,
-  lang,
-}: {
-  dict: Dictionary
-  lang: Locale
-}) {
+export default async function AvailableServers() {
   const data = await serverClient.getServers()
+  const { dict, lang } = useLocalStore.getState()
   if (!data) return <></>
 
   return (
@@ -64,7 +58,7 @@ export default async function AvailableServers({
                 <TableCell>{server.averagePing}</TableCell>
                 <TableCell>
                   <div className="mx-auto w-fit">
-                    <SelectServer server={server} dict={dict} />
+                    <SelectServer server={server} />
                   </div>
                 </TableCell>
               </TableRow>

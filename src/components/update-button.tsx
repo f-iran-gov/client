@@ -17,8 +17,10 @@ import {
 import { Check, X } from "lucide-react"
 import Loading from "./loading"
 import { toast } from "react-toastify"
+import useLocalStore from "@/context/locale-store"
 
 export default function UpdateButton() {
+  const { navbar } = useLocalStore(state => state.dict)
   const { data: updated, isLoading, refetch } = trpc.getIsUpdated.useQuery()
   const updateSystem = trpc.updateSystem.useMutation()
   const [state, setState] = useState<
@@ -32,13 +34,13 @@ export default function UpdateButton() {
     try {
       const data = await updateSystem.mutateAsync()
       if (!data.updated) {
-        toast.error("Failed to update device")
+        toast.error(navbar.updateFailed)
         setState("error")
       } else {
         setState("complete")
       }
     } catch (error) {
-      toast.error("Failed to update device")
+      toast.error(navbar.updateFailed)
       setState("error")
       return
     }
@@ -53,7 +55,7 @@ export default function UpdateButton() {
     return (
       <AlertDialog>
         <AlertDialogTrigger asChild>
-          <Button className="w-[80px]">Update</Button>
+          <Button className="w-[80px]">{navbar.update}</Button>
         </AlertDialogTrigger>
         <AlertDialogContent>
           <AlertDialogHeader>
@@ -61,42 +63,43 @@ export default function UpdateButton() {
               {state === "pending" && (
                 <div className="flex items-center gap-3">
                   <Loading noText />
-                  Update in progress
+                  {navbar.updateInProgress}
                 </div>
               )}
               {state === "confirm" && "Update"}
               {state === "complete" && (
                 <div className="flex items-center gap-3">
                   <Check color="green" />
-                  Update complete
+                  {navbar.updateComplete}
                 </div>
               )}
               {state === "error" && (
                 <div className="flex items-center gap-3">
                   <X color="red" />
-                  Update failed
+                  {navbar.updateFailed}
                 </div>
               )}
             </AlertDialogTitle>
             <AlertDialogDescription>
-              {state === "pending" &&
-                "This could take a few minutes, please wait..."}
-              {state === "confirm" && "Are you sure you want to update?"}
-              {state === "complete" &&
-                "The system is being updated! You can now close this tab."}
-              {state === "error" &&
-                "We failed to update your device. Please try again later ;("}
+              {state === "pending" && navbar.updateWait}
+              {state === "confirm" && navbar.updateConfirm}
+              {state === "complete" && navbar.updateFinished}
+              {state === "error" && navbar.updateError}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             {state === "confirm" && (
               <>
-                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction onClick={update}>Update</AlertDialogAction>
+                <AlertDialogCancel>{navbar.cancel}</AlertDialogCancel>
+                <AlertDialogAction onClick={update}>
+                  {navbar.update}
+                </AlertDialogAction>
               </>
             )}
             {state === "complete" && (
-              <AlertDialogCancel onClick={close}>Close</AlertDialogCancel>
+              <AlertDialogCancel onClick={close}>
+                {navbar.close}
+              </AlertDialogCancel>
             )}
           </AlertDialogFooter>
         </AlertDialogContent>

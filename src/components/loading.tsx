@@ -1,3 +1,4 @@
+import useLocalStore from "@/context/locale-store"
 import { cn } from "@/lib/utils"
 
 export default function Loading({
@@ -9,6 +10,7 @@ export default function Loading({
   noText?: boolean
   className?: string
 }) {
+  const { general } = useLocalStore(state => state.dict)
   const c = cn(
     center
       ? "absolute left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2 transform items-center gap-4 text-lg"
@@ -27,7 +29,7 @@ export default function Loading({
       >
         <span className="!absolute !-m-px !h-px !w-px !overflow-hidden !whitespace-nowrap !border-0 !p-0 ![clip:rect(0,0,0,0)]"></span>
       </div>
-      {noText ? <></> : <h1 className="ml-2">Loading...</h1>}
+      {noText ? <></> : <h1 className="ml-2">{general.loading}</h1>}
     </div>
   )
 }

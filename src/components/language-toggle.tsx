@@ -35,7 +35,7 @@ export function LanguageToggle() {
           English
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => changeLang("fa")}>
-          Persian
+          فارسی
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

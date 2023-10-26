@@ -5,7 +5,11 @@ import { httpBatchLink } from "@trpc/client"
 import React, { useState } from "react"
 import { trpc } from "./client"
 
-export default function Provider({ children }: { children: React.ReactNode }) {
+export default function TRPCProvider({
+  children,
+}: {
+  children: React.ReactNode
+}) {
   const url =
     (process.env.NEXT_PUBLIC_HOSTNAME ?? "http://localhost:3001") + "/api/trpc"
 

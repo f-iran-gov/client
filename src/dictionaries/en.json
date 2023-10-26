@@ -1,8 +1,26 @@
 {
+  "general": {
+    "loading": "Loading..."
+  },
   "home": {
-    "title": "Welcome to your new VPN service provider.",
-    "register": "Register",
-    "login": "Login"
+    "title": "Welcome to your new VPN service provider."
+  },
+  "navbar": {
+    "title": "Easy VPN",
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System",
+    "toggle": "Toggle Theme",
+    "update": "Update",
+    "close": "Close",
+    "cancel": "Cancel",
+    "updateConfirm": "Are you sure you want to update?",
+    "updateInProgress": "Update in progress",
+    "updateComplete": "Update complete",
+    "updateFailed": "Failed to update device",
+    "updateWait": "This could take a few minutes, please wait...",
+    "updateFinished": "The system is done updating! You can now close this tab.",
+    "updateError": "We failed to update your device. Please try again later ;("
   },
   "dashboard": {
     "users": "Connected Users",
@@ -21,5 +39,20 @@
     "signal": "Signal",
     "active": "Active",
     "inactive": "Inactive"
+  },
+  "auth": {
+    "username": "Username",
+    "whatToCall": "What should we call you?",
+    "email": "Email",
+    "emailAddress": "Email Address",
+    "password": "Password",
+    "passwordConfirm": "Confirm Password",
+    "signIn": "Sign In",
+    "signOut": "Sign Out",
+    "register": "Register",
+    "goToSignUp": "No account yet? Register here!",
+    "goToSignIn": "Already a member? Login here!",
+    "licenseKey": "License Key",
+    "verify": "Verify"
   }
 }

@@ -1,6 +1,10 @@
+import { getDictionary } from "@/lib/dictionary"
+
 export const i18n = {
   defaultLocale: "en",
   locales: ["en", "fa"],
 } as const
 
 export type Locale = (typeof i18n)["locales"][number]
+
+export type Dictionary = Awaited<ReturnType<typeof getDictionary>>

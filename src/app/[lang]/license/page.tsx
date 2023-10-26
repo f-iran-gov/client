@@ -18,7 +18,7 @@ import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { trpc } from "@/app/_trpc/client"
-import { Locale } from "@/types/i18n.type"
+import useLocalStore from "@/context/locale-store"
 
 const formSchema = z.object({
   license: z
@@ -28,11 +28,9 @@ const formSchema = z.object({
 
 type FormSchema = z.infer<typeof formSchema>
 
-export default function License({
-  params: { lang },
-}: {
-  params: { lang: Locale }
-}) {
+export default function License() {
+  const { auth } = useLocalStore(state => state.dict)
+  const lang = useLocalStore(state => state.lang)
   const license = VpnStore.getState().license
   const router = useRouter()
   const [loading, setLoading] = useState(false)
@@ -68,15 +66,16 @@ export default function License({
       <form
         onSubmit={form.handleSubmit(onSubmit)}
         className="mx-auto w-full transform space-y-6 md:w-[50%]"
+        dir={lang === "fa" ? "rtl" : "ltr"}
       >
         <FormField
           control={form.control}
           name="license"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>License Key</FormLabel>
+              <FormLabel>{auth.licenseKey}</FormLabel>
               <FormControl>
-                <Input placeholder="License Key" {...field} />
+                <Input placeholder={auth.licenseKey} {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -88,7 +87,7 @@ export default function License({
           variant="default"
           className="w-full"
         >
-          {loading ? <Loading /> : "Verify"}
+          {loading ? <Loading /> : auth.verify}
         </Button>
       </form>
     </Form>

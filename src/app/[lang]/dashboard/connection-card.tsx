@@ -9,16 +9,9 @@ import VpnStore from "@/context/vpn-store"
 import { useEffect } from "react"
 import ConnectionDuration from "./connection-duration"
 import { toast } from "react-toastify"
-import { Dictionary } from "@/lib/dictionary"
-import { Locale } from "@/types/i18n.type"
+import useLocalStore from "@/context/locale-store"
 
-export default function ConnectionCard({
-  dict,
-  lang,
-}: {
-  dict: Dictionary
-  lang: Locale
-}) {
+export default function ConnectionCard() {
   const { data: server, refetch: refetchServer } =
     trpc.getCurrentServer.useQuery()
   const {
@@ -29,6 +22,8 @@ export default function ConnectionCard({
     refetchOnMount: false,
     refetchOnWindowFocus: false,
   })
+  const dict = useLocalStore(state => state.dict)
+  const lang = useLocalStore(state => state.lang)
   const vpnConnect = trpc.vpnConnect.useMutation()
   const loading = VpnStore(state => state.loading)
 

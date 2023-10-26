@@ -19,6 +19,7 @@ import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import Loading from "@/components/loading"
 import { trpc } from "../../_trpc/client"
+import useLocalStore from "@/context/locale-store"
 
 const formData = z
   .object({
@@ -51,6 +52,8 @@ type FormSchema = z.infer<typeof formData>
 export default function SignUp() {
   const router = useRouter()
   const license = VpnStore(state => state.license)
+  const { auth } = useLocalStore(state => state.dict)
+  const lang = useLocalStore(state => state.lang)
   const signUp = trpc.signUp.useMutation()
   const [loading, setLoading] = useState(false)
 
@@ -75,7 +78,7 @@ export default function SignUp() {
     })
 
     if (data.success) {
-      router.push("/dashboard")
+      router.push("dashboard")
       return
     }
 
@@ -103,19 +106,16 @@ export default function SignUp() {
       <form
         onSubmit={form.handleSubmit(onSubmit)}
         className="mx-auto w-full space-y-6 md:w-[50%]"
+        dir={lang === "fa" ? "rtl" : "ltr"}
       >
         <FormField
           control={form.control}
           name="username"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Username</FormLabel>
+              <FormLabel>{auth.username}</FormLabel>
               <FormControl>
-                <Input
-                  type="text"
-                  placeholder="What should we call you?"
-                  {...field}
-                />
+                <Input type="text" placeholder={auth.whatToCall} {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -126,9 +126,13 @@ export default function SignUp() {
           name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Email Address</FormLabel>
+              <FormLabel>{auth.email}</FormLabel>
               <FormControl>
-                <Input type="email" placeholder="Email" {...field} />
+                <Input
+                  type="email"
+                  placeholder={auth.emailAddress}
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -139,9 +143,9 @@ export default function SignUp() {
           name="password1"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Password</FormLabel>
+              <FormLabel>{auth.password}</FormLabel>
               <FormControl>
-                <Input type="password" placeholder="Password" {...field} />
+                <Input type="password" placeholder={auth.password} {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -152,11 +156,11 @@ export default function SignUp() {
           name="password2"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Password Confirmation</FormLabel>
+              <FormLabel>{auth.passwordConfirm}</FormLabel>
               <FormControl>
                 <Input
                   type="password"
-                  placeholder="Password Once Again"
+                  placeholder={auth.passwordConfirm}
                   {...field}
                 />
               </FormControl>
@@ -165,14 +169,14 @@ export default function SignUp() {
           )}
         />
         <Button type="submit" variant="default" className="w-full">
-          {loading ? <Loading /> : "Register"}
+          {loading ? <Loading /> : auth.register}
         </Button>
-        <Link href="/sign-in">
+        <Link href="sign-in">
           <Button
             className="mt-2 h-0 px-0 text-sm transition-all hover:text-blue-400"
             variant="link"
           >
-            Already a member? Login here.
+            {auth.goToSignIn}
           </Button>
         </Link>
       </form>

@@ -7,15 +7,9 @@ import Loading from "@/components/loading"
 import { wait } from "@/lib/wait"
 import { toast } from "react-toastify"
 import { trpc } from "@/app/_trpc/client"
-import { Dictionary } from "@/lib/dictionary"
+import useLocalStore from "@/context/locale-store"
 
-export default function SelectServer({
-  server,
-  dict,
-}: {
-  server: Server
-  dict: Dictionary
-}) {
+export default function SelectServer({ server }: { server: Server }) {
   const {
     data: currentServer,
     refetch: refetchCurrentServer,
@@ -23,6 +17,7 @@ export default function SelectServer({
   } = trpc.getCurrentServer.useQuery()
   const { data: connected, refetch: refetchConnection } =
     trpc.connectionStatus.useQuery()
+  const dict = useLocalStore(state => state.dict)
   const vpnConnect = trpc.vpnConnect.useMutation()
   const loading = VpnStore(state => state.loading)
 
