@@ -16,7 +16,8 @@ export default async function torRequest(
       {
         url: process.env.SERVER_URL! + input,
         method,
-        proxy: "http://127.0.0.1:9080",
+        proxy:
+          process.env.NODE_ENV !== "development" && "http://127.0.0.1:9080",
         body: JSON.stringify(body),
         headers: {
           "Content-Type": "application/json",

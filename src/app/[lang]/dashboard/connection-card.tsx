@@ -24,7 +24,7 @@ export default function ConnectionCard() {
   })
   const dict = useLocalStore(state => state.dict)
   const lang = useLocalStore(state => state.lang)
-  const vpnConnect = trpc.vpnConnect.useMutation()
+  const proxyConnect = trpc.proxyConnect.useMutation()
   const loading = VpnStore(state => state.loading)
 
   useEffect(() => {
@@ -38,7 +38,7 @@ export default function ConnectionCard() {
       countryCode: connected ? "" : "US",
     }
     VpnStore.setState({ loading: true })
-    const res = await vpnConnect.mutateAsync(defaultServer)
+    const res = await proxyConnect.mutateAsync(defaultServer)
     if (res.error) {
       toast.error(res.error)
     }

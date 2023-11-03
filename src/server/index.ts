@@ -1,13 +1,13 @@
 import { z } from "zod"
 import { publicProcedure, router } from "./trpc"
 import { connectionStatus } from "./lib/connection-status"
-import { vpnConnect } from "./lib/vpn-connect"
 import { connectedUsers } from "./lib/connected-users"
 import { getServers } from "./lib/get-servers"
 import { signUp } from "./lib/sign-up"
 import { getCurrentServer } from "./lib/get-current-server"
 import { isUpdated, updateSystem } from "./lib/update-system"
 import torRequest from "./lib/tor-request"
+import { proxyConnect } from "./lib/proxy-connect"
 
 const VpnConnectZod = z.object({
   serverName: z.string(),
@@ -32,9 +32,9 @@ export const appRouter = router({
   torRequest: publicProcedure
     .input(z.string())
     .mutation(c => torRequest(c.input)),
-  vpnConnect: publicProcedure
+  proxyConnect: publicProcedure
     .input(VpnConnectZod)
-    .mutation(({ input }) => vpnConnect(input)),
+    .mutation(({ input }) => proxyConnect(input)),
   connectedUsers: publicProcedure.query(connectedUsers),
   getServers: publicProcedure.query(getServers),
   signUp: publicProcedure.input(SignUpZod).mutation(c => signUp(c.input)),

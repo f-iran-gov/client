@@ -13,7 +13,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     if (status === "unauthenticated") router.push("sign-in")
   }, [status])
 
-  if (status === "authenticated") {
+  if (status !== "unauthenticated") {
     return <>{children}</>
   } else {
     return <Loading center />

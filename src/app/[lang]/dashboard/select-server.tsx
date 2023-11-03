@@ -18,12 +18,12 @@ export default function SelectServer({ server }: { server: Server }) {
   const { data: connected, refetch: refetchConnection } =
     trpc.connectionStatus.useQuery()
   const dict = useLocalStore(state => state.dict)
-  const vpnConnect = trpc.vpnConnect.useMutation()
+  const proxyConnect = trpc.proxyConnect.useMutation()
   const loading = VpnStore(state => state.loading)
 
   async function handleClick() {
     VpnStore.setState({ loading: true })
-    const res = await vpnConnect.mutateAsync({
+    const res = await proxyConnect.mutateAsync({
       serverName: server.name,
       country: server.country,
       countryCode: server.country_code,

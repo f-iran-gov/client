@@ -9,6 +9,10 @@ import { VpnConnectType } from ".."
 import asyncExec from "./async-exec"
 import torRequest from "./tor-request"
 
+/**
+ * @deprecated I mean this works fine, but just use the `proxyConnect` function instead.
+ * Proxies work much better in Iran, than OpenVPN.
+ */
 export async function vpnConnect({
   serverName,
   country,

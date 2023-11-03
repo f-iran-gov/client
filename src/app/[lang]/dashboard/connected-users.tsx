@@ -1,5 +1,3 @@
-"use client"
-
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import {
   Table,
@@ -10,25 +8,15 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { Check, RefreshCcw, X } from "lucide-react"
-import { trpc } from "@/app/_trpc/client"
-import { User } from "@/server/lib/connected-users"
-import Loading from "@/components/loading"
 import useLocalStore from "@/context/locale-store"
+import { serverClient } from "@/app/_trpc/serverClient"
+import { revalidatePath } from "next/cache"
+import { getDictionary } from "@/lib/dictionary"
 
-export default function ConnectedUsers({
-  initialData,
-}: {
-  initialData: User[]
-}) {
-  const {
-    data: users,
-    refetch,
-    isLoading,
-  } = trpc.connectedUsers.useQuery(undefined, {
-    initialData,
-  })
-  const dict = useLocalStore(state => state.dict)
-  const lang = useLocalStore(state => state.lang)
+export default async function ConnectedUsers() {
+  const users = await serverClient.connectedUsers()
+  const lang = useLocalStore.getState().lang
+  const dict = await getDictionary(lang)
 
   // useEffect(() => {
   //   const interval = setInterval(() => {
@@ -38,16 +26,16 @@ export default function ConnectedUsers({
   //   return () => clearInterval(interval)
   // }, [])
 
-  if (isLoading) {
-    return (
-      <Card className="col-span-2 md:col-span-2">
-        <CardHeader className="flex flex-row items-center gap-x-4">
-          <h1>{dict.dashboard.users}</h1>
-          <Loading noText />
-        </CardHeader>
-      </Card>
-    )
-  }
+  // if (isLoading) {
+  //   return (
+  //     <Card className="col-span-2 md:col-span-2">
+  //       <CardHeader className="flex flex-row items-center gap-x-4">
+  //         <h1>{dict.dashboard.users}</h1>
+  //         <Loading noText />
+  //       </CardHeader>
+  //     </Card>
+  //   )
+  // }
 
   return (
     <Card className="col-span-2 md:col-span-2">
@@ -56,11 +44,18 @@ export default function ConnectedUsers({
         dir={lang === "fa" ? "rtl" : "ltr"}
       >
         <h1>{dict.dashboard.users}</h1>
-        <RefreshCcw
-          className="cursor-pointer transition duration-500 hover:rotate-180 hover:scale-105"
-          size={20}
-          onClick={() => refetch()}
-        />
+        <form action="">
+          <button
+            formAction={async () => {
+              "use server"
+              console.log(`/${lang}/dashboard`)
+              revalidatePath(`/${lang}/dashboard`)
+            }}
+            className="transition duration-500 hover:rotate-180 hover:scale-105"
+          >
+            <RefreshCcw size={20} />
+          </button>
+        </form>
       </CardHeader>
       <CardContent dir={lang === "fa" ? "rtl" : "ltr"}>
         <Table>

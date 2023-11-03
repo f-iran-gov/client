@@ -53,6 +53,17 @@ export const verificationTokens = sqliteTable(
   })
 )
 
+export const servers = sqliteTable("servers", {
+  id: integer("id").notNull().primaryKey(),
+  name: text("name").notNull(),
+  ip: text("ip").notNull(),
+  port: integer("port").notNull(),
+  username: text("username").notNull(),
+  password: text("password").notNull(),
+  country: text("country").notNull(),
+  countryCode: text("country_code").notNull(),
+})
+
 export const currentServer = sqliteTable("currentServer", {
   id: integer("id").notNull().primaryKey(),
   name: text("name").notNull(),
